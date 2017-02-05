@@ -3,7 +3,7 @@ package com.shivampaw.cem.java.controller;
 import com.shivampaw.cem.java.Main;
 import com.shivampaw.cem.java.datamodel.EmailAccount;
 import com.shivampaw.cem.java.datamodel.EmailAccountsData;
-import com.shivampaw.cem.java.util.JavaFXUtils;
+import com.shivampaw.cem.java.utils.JavaFXUtils;
 import javafx.application.Platform;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;

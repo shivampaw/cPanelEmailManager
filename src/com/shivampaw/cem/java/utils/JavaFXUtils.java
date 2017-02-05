@@ -1,4 +1,4 @@
-package com.shivampaw.cem.java.util;
+package com.shivampaw.cem.java.utils;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;

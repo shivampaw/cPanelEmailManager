@@ -3,7 +3,7 @@ package com.shivampaw.cem.java.datamodel;
 import com.google.gson.Gson;
 import com.shivampaw.cem.java.datamodel.CPanelResponses.CPanelResponse;
 import com.shivampaw.cem.java.datamodel.CPanelResponses.ListPopsWithDisk;
-import com.shivampaw.cem.java.libs.CPanelUAPI;
+import com.shivampaw.cem.java.utils.CPanelUAPI;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

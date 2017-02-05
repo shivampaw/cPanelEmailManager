@@ -1,4 +1,4 @@
-package com.shivampaw.cem.java.libs;
+package com.shivampaw.cem.java.utils;
 
 import com.google.gson.Gson;
 

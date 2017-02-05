@@ -2,7 +2,7 @@ package com.shivampaw.cem.java.controller;
 
 import com.shivampaw.cem.java.Main;
 import com.shivampaw.cem.java.datamodel.EmailAccountsData;
-import com.shivampaw.cem.java.util.JavaFXUtils;
+import com.shivampaw.cem.java.utils.JavaFXUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

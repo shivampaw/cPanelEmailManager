@@ -1,4 +1,4 @@
-package com.shivampaw.cem.java.libs;
+package com.shivampaw.cem.java.utils;
 
 import java.net.MalformedURLException;
 import java.net.URI;
