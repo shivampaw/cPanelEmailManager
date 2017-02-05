@@ -1,0 +1,5 @@
+.idea
+cPanelEmailManager.iml
+out
+jar/*.html
+jar/*.jnlp
