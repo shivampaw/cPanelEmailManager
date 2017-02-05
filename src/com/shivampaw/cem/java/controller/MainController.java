@@ -2,7 +2,7 @@ package com.shivampaw.cem.java.controller;
 
 import com.shivampaw.cem.java.Main;
 import com.shivampaw.cem.java.datamodel.EmailAccount;
-import com.shivampaw.cem.java.datamodel.EmailAccountsData;
+import com.shivampaw.cem.java.datamodel.EmailManager;
 import com.shivampaw.cem.java.utils.JavaFXUtils;
 import javafx.application.Platform;
 import javafx.collections.transformation.SortedList;
@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.Optional;
 
-public class ShowController {
+public class MainController {
     @FXML
     private ListView<EmailAccount> emailAccountListView;
     @FXML
@@ -39,7 +39,7 @@ public class ShowController {
         setCellFactory();
         setSelectionModel();
 
-        SortedList<EmailAccount> sortedAccounts = new SortedList<>(EmailAccountsData.getInstance().getAccounts(), Comparator.comparing(EmailAccount::getUser));
+        SortedList<EmailAccount> sortedAccounts = new SortedList<>(EmailManager.getInstance().getAccounts(), Comparator.comparing(EmailAccount::getUser));
         emailAccountListView.setItems(sortedAccounts);
         emailAccountListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         emailAccountListView.getSelectionModel().selectFirst();
@@ -50,13 +50,13 @@ public class ShowController {
      */
     private void setSelectionModel() {
         emailAccountListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue != null) { // if a account note has been selected
+            if (newValue != null) { // if an actual account has been selected
                 EmailAccount item = emailAccountListView.getSelectionModel().getSelectedItem();
                 editingGridPane.setVisible(true);
                 editingLabel.setText(item.getEmail());
                 accountQuota.setText(item.getDiskQuota());
                 currentUsed.setText("Current Account Usage: " + item.getDiskUsed() + "MB");
-            } else { // if no new account has been selected
+            } else { // if no account has been selected
                 editingGridPane.setVisible(false);
             }
         });
@@ -102,13 +102,13 @@ public class ShowController {
 
         dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
-        AccountController accountController = fxmlLoader.getController();
+        NewAccountController newAccountController = fxmlLoader.getController();
         Optional<ButtonType> result = dialog.showAndWait(); // shows the dialog
 
         if(result.isPresent() && result.get() == ButtonType.OK) {
             Stage creatingAccountStage = JavaFXUtils.showProgressDialog("Creating Account...");
             new Thread(() -> {
-                accountController.newAccount();
+                newAccountController.newAccount();
                 Platform.runLater(creatingAccountStage::hide);
             }).start();
         }
@@ -119,7 +119,7 @@ public class ShowController {
      */
     public void deleteAccount() {
         EmailAccount account = emailAccountListView.getSelectionModel().getSelectedItem();
-        if(account != null) { // if there is no note selected then do nothing
+        if (account != null) { // if there is no account selected then do nothing
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Delete Email Account");
             alert.setHeaderText("Delete Account " + account.getEmail());
@@ -130,7 +130,7 @@ public class ShowController {
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 Stage deletingAccountStage = JavaFXUtils.showProgressDialog("Deleting Account...");
                 new Thread(() -> {
-                    EmailAccountsData.getInstance().deleteEmailAccount(account.getEmail());
+                    EmailManager.getInstance().deleteEmailAccount(account.getEmail());
                     Platform.runLater(deletingAccountStage::hide);
                 }).start();
             }
@@ -150,15 +150,22 @@ public class ShowController {
 
         new Thread(() -> {
             if(!password.equals("")) {
-                EmailAccountsData.getInstance().editEmailAccountPassword(account.getUser(), password);
+                EmailManager.getInstance().editEmailAccountPassword(account.getUser(), password);
             }
             if(!accountQuota.getText().equals("") && !accountQuota.getText().equals(account.getDiskQuota())) {
-                EmailAccountsData.getInstance().editEmailAccountQuota(account.getUser(), accountQuota.getText());
+                EmailManager.getInstance().editEmailAccountQuota(account.getUser(), accountQuota.getText());
             }
             Platform.runLater(editingAccountStage::hide);
         }).start();
 
 
+    }
+
+    /**
+     * Logout menu item pressed, let's logout!
+     */
+    public void logout() throws IOException {
+        EmailManager.getInstance().logout();
     }
 
     /**

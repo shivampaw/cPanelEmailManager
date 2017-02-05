@@ -1,7 +1,7 @@
 package com.shivampaw.cem.java.controller;
 
 import com.shivampaw.cem.java.Main;
-import com.shivampaw.cem.java.datamodel.EmailAccountsData;
+import com.shivampaw.cem.java.datamodel.EmailManager;
 import com.shivampaw.cem.java.utils.JavaFXUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -40,11 +40,16 @@ public class LoginController {
             @Override
             public void run() {
                 try {
-                    EmailAccountsData.getInstance().login(cPanelUsername.getText(), cPanelPassword.getText(), cPanelServer.getText());
-                    EmailAccountsData.getInstance().getEmailAccounts();
-                    Main.parentWindow.getScene().setRoot(FXMLLoader.load(getClass().getResource("/com/shivampaw/cem/resources/ShowAccounts.fxml")));
+                    EmailManager.getInstance().login(cPanelUsername.getText(), cPanelPassword.getText(), cPanelServer.getText());
+                    EmailManager.getInstance().getEmailAccounts();
+                    Main.parentWindow.getScene().setRoot(FXMLLoader.load(getClass().getResource("/com/shivampaw/cem/resources/MainWindow.fxml")));
                 } catch (Exception e) {
-                    Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Login Failed. Check you entered the correct details and try again.").show());
+                    Platform.runLater(() -> {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setHeaderText("Login Failed");
+                        alert.setContentText("Check you entered the correct details and are using a valid host that supports SSL.");
+                        alert.show();
+                    });
                 }
                 Platform.runLater(loginStage::hide);
             }

@@ -1,11 +1,11 @@
 package com.shivampaw.cem.java.controller;
 
-import com.shivampaw.cem.java.datamodel.EmailAccountsData;
+import com.shivampaw.cem.java.datamodel.EmailManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-public class AccountController {
+public class NewAccountController {
     @FXML
     private TextField accountUsername;
     @FXML
@@ -17,6 +17,6 @@ public class AccountController {
      * Create a new email account
      */
     public void newAccount()  {
-        EmailAccountsData.getInstance().createEmailAccount(accountUsername.getText(), accountPassword.getText(), accountQuota.getText());
+        EmailManager.getInstance().createEmailAccount(accountUsername.getText(), accountPassword.getText(), accountQuota.getText());
     }
 }

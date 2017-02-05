@@ -1,34 +1,37 @@
 package com.shivampaw.cem.java.datamodel;
 
 import com.google.gson.Gson;
+import com.shivampaw.cem.java.Main;
 import com.shivampaw.cem.java.datamodel.CPanelResponses.CPanelResponse;
 import com.shivampaw.cem.java.datamodel.CPanelResponses.ListPopsWithDisk;
 import com.shivampaw.cem.java.utils.CPanelUAPI;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 
+import java.io.IOException;
 import java.util.HashMap;
 
-public class EmailAccountsData {
+public class EmailManager {
+    private static EmailManager ourInstance = new EmailManager();
     private CPanelUAPI uapi;
     private ObservableList<EmailAccount> accounts = FXCollections.observableArrayList();
-
-    private static EmailAccountsData ourInstance = new EmailAccountsData();
-
-    /**
-     * getInstance method for Singleton
-     * @return EmailAccountsData
-     */
-    public static EmailAccountsData getInstance() {
-        return ourInstance;
-    }
 
     /**
      * Private constructor
      */
-    private EmailAccountsData() {}
+    private EmailManager() {
+    }
+
+    /**
+     * getInstance method for Singleton
+     * @return EmailManager
+     */
+    public static EmailManager getInstance() {
+        return ourInstance;
+    }
 
     /**
      * Retrieve accounts
@@ -46,6 +49,15 @@ public class EmailAccountsData {
      */
     public void login(String username, String password, String server) {
         this.uapi = new CPanelUAPI(server, username, password);
+    }
+
+    /**
+     * Logout of the current account and show the LoginWindow
+     */
+    public void logout() throws IOException {
+        this.uapi = null;
+        this.accounts = FXCollections.observableArrayList();
+        Main.parentWindow.getScene().setRoot(FXMLLoader.load(getClass().getResource("/com/shivampaw/cem/resources/LoginWindow.fxml")));
     }
 
     /**
@@ -130,15 +142,11 @@ public class EmailAccountsData {
     private void checkResponse(CPanelResponse response) {
         Platform.runLater(() -> {
             if(response.getStatus() == 1) {
-                    getEmailAccounts();
+                getEmailAccounts();
             } else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR, response.getErrors()[0]);
-                    alert.show();
+                new Alert(Alert.AlertType.ERROR, response.getErrors()[0]).show();
             }
         });
     }
 
-    public CPanelUAPI getUAPI() {
-        return uapi;
-    }
 }

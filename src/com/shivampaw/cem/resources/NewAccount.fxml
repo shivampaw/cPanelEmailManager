@@ -1,7 +1,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<DialogPane fx:controller="com.shivampaw.cem.java.controller.AccountController" xmlns:fx="http://javafx.com/fxml">
+<DialogPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.shivampaw.cem.java.controller.NewAccountController">
     <content>
         <GridPane vgap="10" hgap="10">
             <Label text="Username" GridPane.columnIndex="0" GridPane.rowIndex="0" />

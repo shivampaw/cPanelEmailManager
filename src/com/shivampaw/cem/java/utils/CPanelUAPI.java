@@ -41,6 +41,7 @@ public class CPanelUAPI {
             HttpsURLConnection conn = (HttpsURLConnection)url.openConnection();
             conn.addRequestProperty("Authorization", "Basic " + Base64.getEncoder().encodeToString((this.username + ":"
                     + this.password).getBytes()));
+            conn.setConnectTimeout(5000);
             BufferedReader br;
             if (200 <= conn.getResponseCode() && conn.getResponseCode() <= 299) {
                 br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
