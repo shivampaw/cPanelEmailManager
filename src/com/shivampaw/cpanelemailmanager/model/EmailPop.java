@@ -1,10 +1,18 @@
-package com.shivampaw.cem.java.datamodel;
+package com.shivampaw.cpanelemailmanager.model;
 
 public class EmailPop {
     private String user;
     private String email;
     private String diskquota;
     private String diskused;
+
+
+    public EmailPop(String user, String email, String diskquota, String diskused) {
+        this.user = user;
+        this.email = email;
+        this.diskquota = diskquota;
+        this.diskused = diskused;
+    }
 
     public String getUser() {
         return user;

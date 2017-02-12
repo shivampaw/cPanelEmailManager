@@ -1,4 +1,4 @@
-package com.shivampaw.cem.java.datamodel;
+package com.shivampaw.cpanelemailmanager.model;
 
 import javafx.beans.property.SimpleStringProperty;
 

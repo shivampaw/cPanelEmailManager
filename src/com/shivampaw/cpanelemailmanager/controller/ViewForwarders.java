@@ -1,9 +1,9 @@
-package com.shivampaw.cem.java.controller;
+package com.shivampaw.cpanelemailmanager.controller;
 
-import com.shivampaw.cem.java.EmailManager;
-import com.shivampaw.cem.java.Main;
-import com.shivampaw.cem.java.datamodel.EmailForwarder;
-import com.shivampaw.cem.java.utils.JavaFXUtils;
+import com.shivampaw.cpanelemailmanager.EmailManager;
+import com.shivampaw.cpanelemailmanager.Main;
+import com.shivampaw.cpanelemailmanager.model.EmailForwarder;
+import com.shivampaw.cpanelemailmanager.utils.JavaFXUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -45,7 +45,7 @@ public class ViewForwarders {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.initOwner(Main.parentWindow.getOwner());
         dialog.setTitle("Create Email Forwarder");
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/shivampaw/cem/resources/NewForwarder.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/shivampaw/cpanelemailmanager/view/NewForwarder.fxml"));
 
         try {
             dialog.getDialogPane().setContent(fxmlLoader.load());

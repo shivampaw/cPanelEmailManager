@@ -1,4 +1,4 @@
-package com.shivampaw.cem.java;
+package com.shivampaw.cpanelemailmanager;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -13,9 +13,9 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         parentWindow = primaryStage;
 
-        Parent root = FXMLLoader.load(getClass().getResource("/com/shivampaw/cem/resources/LoginWindow.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/com/shivampaw/cpanelemailmanager/view/LoginWindow.fxml"));
         primaryStage.setTitle("cPanel Email Manager");
-        primaryStage.setScene(new Scene(root, 900, 600));
+        primaryStage.setScene(new Scene(root, 1000, 600));
         primaryStage.show();
     }
 

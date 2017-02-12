@@ -1,8 +1,8 @@
-package com.shivampaw.cem.java.controller;
+package com.shivampaw.cpanelemailmanager.controller;
 
-import com.shivampaw.cem.java.Main;
-import com.shivampaw.cem.java.EmailManager;
-import com.shivampaw.cem.java.utils.JavaFXUtils;
+import com.shivampaw.cpanelemailmanager.Main;
+import com.shivampaw.cpanelemailmanager.EmailManager;
+import com.shivampaw.cpanelemailmanager.utils.JavaFXUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,7 +30,7 @@ public class LoginController {
 
     /**
      * Login the user whilst showing a progress dialog
-     * @throws IOException
+     * @throws IOException exception if error occurs loading main window.
      */
     @FXML
     public void login() throws IOException {
@@ -42,7 +42,7 @@ public class LoginController {
                 try {
                     EmailManager.getInstance().login(cPanelUsername.getText(), cPanelPassword.getText(), cPanelServer.getText());
                     EmailManager.getInstance().getPopEmailAccounts();
-                    Main.parentWindow.getScene().setRoot(FXMLLoader.load(getClass().getResource("/com/shivampaw/cem/resources/MainWindow.fxml")));
+                    Main.parentWindow.getScene().setRoot(FXMLLoader.load(getClass().getResource("/com/shivampaw/cpanelemailmanager/view/MainWindow.fxml")));
                 } catch (Exception e) {
                     Platform.runLater(() -> {
                         Alert alert = new Alert(Alert.AlertType.ERROR);

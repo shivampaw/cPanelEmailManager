@@ -1,6 +1,6 @@
-package com.shivampaw.cem.java.controller;
+package com.shivampaw.cpanelemailmanager.controller;
 
-import com.shivampaw.cem.java.EmailManager;
+import com.shivampaw.cpanelemailmanager.EmailManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -16,7 +16,7 @@ public class NewAccountController {
     /**
      * Create a new email account
      */
-    public void newAccount()  {
+    void newAccount()  {
         EmailManager.getInstance().createEmailAccount(accountUsername.getText(), accountPassword.getText(), accountQuota.getText());
     }
 }

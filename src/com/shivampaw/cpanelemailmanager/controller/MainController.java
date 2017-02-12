@@ -1,9 +1,9 @@
-package com.shivampaw.cem.java.controller;
+package com.shivampaw.cpanelemailmanager.controller;
 
-import com.shivampaw.cem.java.Main;
-import com.shivampaw.cem.java.EmailManager;
-import com.shivampaw.cem.java.datamodel.EmailPop;
-import com.shivampaw.cem.java.utils.JavaFXUtils;
+import com.shivampaw.cpanelemailmanager.Main;
+import com.shivampaw.cpanelemailmanager.EmailManager;
+import com.shivampaw.cpanelemailmanager.model.EmailPop;
+import com.shivampaw.cpanelemailmanager.utils.JavaFXUtils;
 import javafx.application.Platform;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
@@ -49,14 +49,14 @@ public class MainController {
      * This is fired when we change the note in the ListView
      */
     private void setSelectionModel() {
-        emailAccountListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) { // if an actual account has been selected
+        emailAccountListView.getSelectionModel().selectedItemProperty().addListener((observable, oldAccount, newAccount) -> {
+            if (newAccount != null) {
                 EmailPop item = emailAccountListView.getSelectionModel().getSelectedItem();
                 editingGridPane.setVisible(true);
                 editingLabel.setText(item.getEmail());
                 accountQuota.setText(item.getDiskQuota());
                 currentUsed.setText("Current Account Usage: " + item.getDiskUsed() + "MB");
-            } else { // if no account has been selected
+            } else {
                 editingGridPane.setVisible(false);
             }
         });
@@ -85,13 +85,14 @@ public class MainController {
     }
 
     /**
-     * Show new account fxml
+     * Show new account fxml in modal dialog and then
+     * process the result.
      */
     public void newAccount() {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.initOwner(Main.parentWindow.getOwner());
         dialog.setTitle("Create Email Account");
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/shivampaw/cem/resources/NewAccount.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/shivampaw/cpanelemailmanager/view/NewAccount.fxml"));
 
         try {
             dialog.getDialogPane().setContent(fxmlLoader.load());
@@ -103,7 +104,7 @@ public class MainController {
         dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
         NewAccountController newAccountController = fxmlLoader.getController();
-        Optional<ButtonType> result = dialog.showAndWait(); // shows the dialog
+        Optional<ButtonType> result = dialog.showAndWait();
 
         if(result.isPresent() && result.get() == ButtonType.OK) {
             Stage creatingAccountStage = JavaFXUtils.showProgressDialog("Creating Account...");
@@ -115,7 +116,7 @@ public class MainController {
     }
 
     /**
-     * Prompt for account deletion and delete if OK
+     * Prompt for account deletion and delete if OK pressed.
      */
     public void deleteAccount() {
         EmailPop account = emailAccountListView.getSelectionModel().getSelectedItem();
@@ -170,20 +171,25 @@ public class MainController {
 
     /**
      * Open view forwarders window in a new modal window
-     * @throws IOException
+     * @throws IOException exception thrown if error occurs whilst loading view forwarders dialog
      */
     public void viewForwarders() throws IOException {
-        EmailManager.getInstance().getForwardEmailAccounts();
+
+        Stage viewForwardersProgressBar = JavaFXUtils.showProgressDialog("Loading Account Forwarders...");
+        new Thread(() -> {
+            EmailManager.getInstance().getForwardEmailAccounts();
+            Platform.runLater(viewForwardersProgressBar::hide);
+        }).start();
 
         Dialog dialog = new Dialog<>();
         dialog.initOwner(Main.parentWindow.getOwner());
         dialog.setTitle("View Email Forwarders");
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/shivampaw/cem/resources/ViewForwarders.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/shivampaw/cpanelemailmanager/view/ViewForwarders.fxml"));
 
         try {
             dialog.getDialogPane().setContent(fxmlLoader.load());
         } catch (IOException e) {
-            System.err.println("Error loading email forwarders dialog!");
+            System.err.println("Error loading email forwarders!");
             e.printStackTrace();
         }
 

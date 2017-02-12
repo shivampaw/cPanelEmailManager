@@ -1,19 +1,15 @@
-package com.shivampaw.cem.java.utils;
+package com.shivampaw.cpaneluapi;
 
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-public class UriBuilder {
+class UriBuilder {
     private StringBuilder folders, params;
-    private String connType, host;
+    private String host;
 
-    void setConnectionType(String conn) {
-        connType = conn;
-    }
-
-    UriBuilder(){
+    private UriBuilder(){
         folders = new StringBuilder();
         params = new StringBuilder();
     }
@@ -38,12 +34,8 @@ public class UriBuilder {
     }
 
     URL getURL() throws URISyntaxException, MalformedURLException {
+        String connType = "https";
         return new URI(connType, host, folders.toString(),
                 params.toString(), null).toURL();
-    }
-
-    String getRelativeURL() throws URISyntaxException, MalformedURLException{
-        URI uri = new URI(null, null, folders.toString(), params.toString(), null);
-        return uri.toString();
     }
 }
