@@ -1,0 +1,15 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<DialogPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.shivampaw.cpanelemailmanager.controller.NewForwarderController">
+    <content>
+        <GridPane vgap="10" hgap="10">
+            <Label text='The "Forward From Username" should only be the username. E.g. "user", not "user@domain.com"' GridPane.rowIndex="0" GridPane.columnIndex="0" />
+
+            <Label text="Forward From Username" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField fx:id="forwardFrom" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+            <Label text="Forward To Email" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <TextField fx:id="forwardTo" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        </GridPane>
+    </content>
+</DialogPane>

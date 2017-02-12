@@ -1,4 +1,4 @@
-package com.shivampaw.cem.java.utils;
+package com.shivampaw.cpanelemailmanager.utils;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;

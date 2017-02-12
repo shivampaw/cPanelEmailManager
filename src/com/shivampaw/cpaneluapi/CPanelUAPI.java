@@ -1,4 +1,4 @@
-package com.shivampaw.cem.java.utils;
+package com.shivampaw.cpaneluapi;
 
 import com.google.gson.Gson;
 
@@ -28,7 +28,6 @@ public class CPanelUAPI {
 
     public String call(String module, String function, HashMap<String, String> params) {
         UriBuilder uriBuilder = new UriBuilder(this.host + ":2083");
-        uriBuilder.setConnectionType("https");
         uriBuilder.addSubfolder("execute");
         uriBuilder.addSubfolder(module);
         uriBuilder.addSubfolder(function);
@@ -60,7 +59,7 @@ public class CPanelUAPI {
     }
 
 
-    public boolean isJSONValid(String jsonInString) {
+    private boolean isJSONValid(String jsonInString) {
         Gson gson = new Gson();
         try {
             gson.fromJson(jsonInString, Object.class);
