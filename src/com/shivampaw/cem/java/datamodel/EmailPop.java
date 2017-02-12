@@ -1,6 +1,6 @@
 package com.shivampaw.cem.java.datamodel;
 
-public class EmailAccount {
+public class EmailPop {
     private String user;
     private String email;
     private String diskquota;

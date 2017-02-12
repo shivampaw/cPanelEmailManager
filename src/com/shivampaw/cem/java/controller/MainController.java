@@ -1,8 +1,8 @@
 package com.shivampaw.cem.java.controller;
 
 import com.shivampaw.cem.java.Main;
-import com.shivampaw.cem.java.datamodel.EmailAccount;
-import com.shivampaw.cem.java.datamodel.EmailManager;
+import com.shivampaw.cem.java.EmailManager;
+import com.shivampaw.cem.java.datamodel.EmailPop;
 import com.shivampaw.cem.java.utils.JavaFXUtils;
 import javafx.application.Platform;
 import javafx.collections.transformation.SortedList;
@@ -19,7 +19,7 @@ import java.util.Optional;
 
 public class MainController {
     @FXML
-    private ListView<EmailAccount> emailAccountListView;
+    private ListView<EmailPop> emailAccountListView;
     @FXML
     private GridPane editingGridPane;
     @FXML
@@ -39,7 +39,7 @@ public class MainController {
         setCellFactory();
         setSelectionModel();
 
-        SortedList<EmailAccount> sortedAccounts = new SortedList<>(EmailManager.getInstance().getAccounts(), Comparator.comparing(EmailAccount::getUser));
+        SortedList<EmailPop> sortedAccounts = new SortedList<>(EmailManager.getInstance().getPopAccounts(), Comparator.comparing(EmailPop::getUser));
         emailAccountListView.setItems(sortedAccounts);
         emailAccountListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         emailAccountListView.getSelectionModel().selectFirst();
@@ -51,7 +51,7 @@ public class MainController {
     private void setSelectionModel() {
         emailAccountListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) { // if an actual account has been selected
-                EmailAccount item = emailAccountListView.getSelectionModel().getSelectedItem();
+                EmailPop item = emailAccountListView.getSelectionModel().getSelectedItem();
                 editingGridPane.setVisible(true);
                 editingLabel.setText(item.getEmail());
                 accountQuota.setText(item.getDiskQuota());
@@ -66,12 +66,12 @@ public class MainController {
      * This is run for displaying the content in the ListView
      */
     private void setCellFactory() {
-        emailAccountListView.setCellFactory(new Callback<ListView<EmailAccount>, ListCell<EmailAccount>>() {
+        emailAccountListView.setCellFactory(new Callback<ListView<EmailPop>, ListCell<EmailPop>>() {
             @Override
-            public ListCell<EmailAccount> call(ListView<EmailAccount> param) {
-                return new ListCell<EmailAccount>() {
+            public ListCell<EmailPop> call(ListView<EmailPop> param) {
+                return new ListCell<EmailPop>() {
                     @Override
-                    protected void updateItem(EmailAccount item, boolean empty) {
+                    protected void updateItem(EmailPop item, boolean empty) {
                         super.updateItem(item, empty);
                         if(empty) {
                             setText(null);
@@ -118,7 +118,7 @@ public class MainController {
      * Prompt for account deletion and delete if OK
      */
     public void deleteAccount() {
-        EmailAccount account = emailAccountListView.getSelectionModel().getSelectedItem();
+        EmailPop account = emailAccountListView.getSelectionModel().getSelectedItem();
         if (account != null) { // if there is no account selected then do nothing
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Delete Email Account");
@@ -141,7 +141,7 @@ public class MainController {
      * Edit account based on what is entered in the GridPane
      */
     public void editAccount() {
-        EmailAccount account = emailAccountListView.getSelectionModel().getSelectedItem();
+        EmailPop account = emailAccountListView.getSelectionModel().getSelectedItem();
 
         Stage editingAccountStage = JavaFXUtils.showProgressDialog("Editing Account...");
 
@@ -166,6 +166,28 @@ public class MainController {
      */
     public void logout() throws IOException {
         EmailManager.getInstance().logout();
+    }
+
+    /**
+     * Open view forwarders window in a new modal window
+     * @throws IOException
+     */
+    public void viewForwarders() throws IOException {
+        EmailManager.getInstance().getForwardEmailAccounts();
+
+        Dialog dialog = new Dialog<>();
+        dialog.initOwner(Main.parentWindow.getOwner());
+        dialog.setTitle("View Email Forwarders");
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/shivampaw/cem/resources/ViewForwarders.fxml"));
+
+        try {
+            dialog.getDialogPane().setContent(fxmlLoader.load());
+        } catch (IOException e) {
+            System.err.println("Error loading email forwarders dialog!");
+            e.printStackTrace();
+        }
+
+        dialog.show();
     }
 
     /**

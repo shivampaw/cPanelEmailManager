@@ -1,7 +1,7 @@
 package com.shivampaw.cem.java.controller;
 
 import com.shivampaw.cem.java.Main;
-import com.shivampaw.cem.java.datamodel.EmailManager;
+import com.shivampaw.cem.java.EmailManager;
 import com.shivampaw.cem.java.utils.JavaFXUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -41,7 +41,7 @@ public class LoginController {
             public void run() {
                 try {
                     EmailManager.getInstance().login(cPanelUsername.getText(), cPanelPassword.getText(), cPanelServer.getText());
-                    EmailManager.getInstance().getEmailAccounts();
+                    EmailManager.getInstance().getPopEmailAccounts();
                     Main.parentWindow.getScene().setRoot(FXMLLoader.load(getClass().getResource("/com/shivampaw/cem/resources/MainWindow.fxml")));
                 } catch (Exception e) {
                     Platform.runLater(() -> {

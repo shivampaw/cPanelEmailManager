@@ -1,6 +1,6 @@
 package com.shivampaw.cem.java.controller;
 
-import com.shivampaw.cem.java.datamodel.EmailManager;
+import com.shivampaw.cem.java.EmailManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
