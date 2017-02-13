@@ -2,11 +2,11 @@ package com.shivampaw.cpanelemailmanager.model;
 
 import javafx.beans.property.SimpleStringProperty;
 
-public class EmailForwarder {
+public class Forwarder {
     private SimpleStringProperty destination = new SimpleStringProperty();
     private SimpleStringProperty forward = new SimpleStringProperty();
 
-    public EmailForwarder(String forward, String dest) {
+    public Forwarder(String forward, String dest) {
         this.forward.set(forward);
         this.destination.set(dest);
     }

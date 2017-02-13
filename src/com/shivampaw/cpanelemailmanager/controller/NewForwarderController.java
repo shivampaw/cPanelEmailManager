@@ -1,7 +1,7 @@
 package com.shivampaw.cpanelemailmanager.controller;
 
 import com.shivampaw.cpanelemailmanager.EmailManager;
-import com.shivampaw.cpanelemailmanager.model.EmailForwarder;
+import com.shivampaw.cpanelemailmanager.model.Forwarder;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
@@ -12,10 +12,10 @@ public class NewForwarderController {
     private TextField forwardTo;
 
     /**
-     * Create a new email account
+     * Create a new forwarder
      */
-    EmailForwarder newForwarder()  {
-        EmailManager.getInstance().createEmailForwarder(forwardFrom.getText(), forwardTo.getText());
-        return new EmailForwarder(forwardFrom.getText(), forwardTo.getText());
+    Forwarder newForwarder()  {
+        EmailManager.getInstance().createForwarder(forwardFrom.getText(), forwardTo.getText());
+        return new Forwarder(forwardFrom.getText(), forwardTo.getText());
     }
 }

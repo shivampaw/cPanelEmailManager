@@ -41,7 +41,8 @@ public class LoginController {
             public void run() {
                 try {
                     EmailManager.getInstance().login(cPanelUsername.getText(), cPanelPassword.getText(), cPanelServer.getText());
-                    EmailManager.getInstance().getPopEmailAccounts();
+                    EmailManager.getInstance().getMailboxes();
+                    EmailManager.getInstance().getForwarders();
                     Main.parentWindow.getScene().setRoot(FXMLLoader.load(getClass().getResource("/com/shivampaw/cpanelemailmanager/view/MainWindow.fxml")));
                 } catch (Exception e) {
                     Platform.runLater(() -> {
