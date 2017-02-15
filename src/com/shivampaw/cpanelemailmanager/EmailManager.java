@@ -14,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class EmailManager {
@@ -22,6 +23,7 @@ public class EmailManager {
     private ObservableList<Mailbox> mailboxes = FXCollections.observableArrayList();
     private ObservableList<Forwarder> forwarders = FXCollections.observableArrayList();
     private String domain = "";
+    private ObservableList<String> domains = FXCollections.observableArrayList();
 
     /**
      * Private constructor
@@ -61,11 +63,11 @@ public class EmailManager {
     }
 
     /**
-     * Set domain to access
-     * @param domain String of domain to access
+     * Retrieve forwarders
+     * @return ObservableList<Forwarder>
      */
-    public void setDomain(String domain) {
-        this.domain = domain;
+    public ObservableList<String> getDomains() {
+        return this.domains;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////
@@ -82,7 +84,28 @@ public class EmailManager {
     public void login(String username, String password, String server) {
         this.uapi = new CPanelUAPI(server, username, password);
         String json = this.uapi.call("DomainInfo", "list_domains");
-        this.domain = new JsonParser().parse(json).getAsJsonObject().get("data").getAsJsonObject().get("main_domain").getAsString();
+
+        JsonObject domainsObject = new JsonParser().parse(json).getAsJsonObject().get("data").getAsJsonObject();
+        this.domain = domainsObject.get("main_domain").getAsString();
+
+        this.domains.add(this.domain);
+
+        ArrayList<String> parameters = new ArrayList<>();
+        parameters.add("addon_domains");
+        parameters.add("parked_domains");
+        parameters.add("sub_domains");
+
+        for(String parameter : parameters) {
+            for(JsonElement domain : domainsObject.get(parameter).getAsJsonArray()) {
+                this.domains.add(domain.getAsString());
+            }
+        }
+
+
+        for(String s : this.domains) {
+            System.out.println(s);
+        }
+
     }
 
     /**
@@ -91,12 +114,19 @@ public class EmailManager {
     public void logout() throws IOException {
         this.uapi = null;
         this.domain = "";
+        this.domains = FXCollections.observableArrayList();
         this.mailboxes = FXCollections.observableArrayList();
-        this.forwarders = FXCollections.observableArrayList();
+        this.forwarders = FXCollections.observableArrayList();;
         Main.parentWindow.getScene().setRoot(FXMLLoader.load(getClass().getResource("/com/shivampaw/cpanelemailmanager/view/LoginWindow.fxml")));
     }
 
     // TODO: Allow changing of domain on account (default should be main domain)
+    public void switchDomain(String newDomain) throws IOException {
+        this.domain = newDomain;
+        this.mailboxes = FXCollections.observableArrayList();
+        this.forwarders = FXCollections.observableArrayList();
+        Main.parentWindow.getScene().setRoot(FXMLLoader.load(getClass().getResource("/com/shivampaw/cpanelemailmanager/view/MainWindow.fxml")));
+    }
 
     /**
      * Check response and show error if not successful.

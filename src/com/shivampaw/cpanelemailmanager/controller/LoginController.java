@@ -1,12 +1,11 @@
 package com.shivampaw.cpanelemailmanager.controller;
 
-import com.shivampaw.cpanelemailmanager.Main;
 import com.shivampaw.cpanelemailmanager.EmailManager;
+import com.shivampaw.cpanelemailmanager.Main;
 import com.shivampaw.cpanelemailmanager.utils.JavaFXUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -35,7 +34,7 @@ public class LoginController {
     @FXML
     public void login() throws IOException {
 
-        Stage loginStage = JavaFXUtils.showProgressDialog("Logging In...");
+        Stage loginProgressDialog = JavaFXUtils.showProgressDialog("Logging In...");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -45,14 +44,9 @@ public class LoginController {
                     EmailManager.getInstance().getForwarders();
                     Main.parentWindow.getScene().setRoot(FXMLLoader.load(getClass().getResource("/com/shivampaw/cpanelemailmanager/view/MainWindow.fxml")));
                 } catch (Exception e) {
-                    Platform.runLater(() -> {
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setHeaderText("Login Failed");
-                        alert.setContentText("Check you entered the correct details and are using a valid host that supports SSL.");
-                        alert.show();
-                    });
+                    Platform.runLater(() -> JavaFXUtils.showErrorAlert("Login Failed", "Check you entered the correct details and are using a valid host that supports SSL."));
                 }
-                Platform.runLater(loginStage::hide);
+                Platform.runLater(loginProgressDialog::hide);
             }
         }).start();
     }

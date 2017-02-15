@@ -162,33 +162,6 @@ public class ViewMailboxesController {
 
     }
 
-    /**
-     * Open view forwarders window in a new modal window
-     * @throws IOException exception thrown if error occurs whilst loading view forwarders dialog
-     */
-    public void viewForwarders() throws IOException {
-
-        Stage viewForwardersProgressBar = JavaFXUtils.showProgressDialog("Loading Forwarders...");
-        new Thread(() -> {
-            EmailManager.getInstance().getForwarders();
-            Platform.runLater(viewForwardersProgressBar::hide);
-        }).start();
-
-        Dialog dialog = new Dialog<>();
-        dialog.initOwner(Main.parentWindow.getOwner());
-        dialog.setTitle("View Forwarders");
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/shivampaw/cpanelemailmanager/view/forwarders/ViewForwarders.fxml"));
-
-        try {
-            dialog.getDialogPane().setContent(fxmlLoader.load());
-        } catch (IOException e) {
-            System.err.println("Error loading forwarders!");
-            e.printStackTrace();
-        }
-
-        dialog.show();
-    }
-
     public void backToMainWindow() throws IOException {
         Main.parentWindow.getScene().setRoot(FXMLLoader.load(getClass().getResource("/com/shivampaw/cpanelemailmanager/view/MainWindow.fxml")));
     }
