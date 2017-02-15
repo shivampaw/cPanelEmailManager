@@ -2,6 +2,7 @@ package com.shivampaw.cpanelemailmanager.utils;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.VBox;
@@ -31,5 +32,16 @@ public class JavaFXUtils {
         progressDialogStage.show();
 
         return progressDialogStage;
+    }
+
+    public static void showErrorAlert(String text) {
+        showErrorAlert("", text);
+    }
+
+    public static void showErrorAlert(String headerText, String text) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(headerText);
+        alert.setContentText(text);
+        alert.show();
     }
 }

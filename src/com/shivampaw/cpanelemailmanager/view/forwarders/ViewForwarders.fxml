@@ -11,20 +11,20 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shivampaw.cpanelemailmanager.controller.ViewForwarders">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shivampaw.cpanelemailmanager.controller.ViewForwardersController">
    <top>
        <VBox>
            <ToolBar>
                <HBox spacing="10">
                    <Button text="New Email Forwarder" onAction="#newForwarder" />
                    <Button text="Delete Selected Email Forwarder" onAction="#deleteForwarder" />
-                   <Button mnemonicParsing="false" onAction="#close" text="Close" />
+                   <Button text="Back" onAction="#backToMainWindow" />
                </HBox>
            </ToolBar>
        </VBox>
    </top>
    <center>
-      <TableView fx:id="emailForwarderTableView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <TableView fx:id="forwardersTableView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <columns>
           <TableColumn fx:id="forward" prefWidth="75.0" text="Email Address" />
           <TableColumn fx:id="destination" prefWidth="75.0" text="Forwards To" />

@@ -2,7 +2,7 @@ package com.shivampaw.cpanelemailmanager.controller;
 
 import com.shivampaw.cpanelemailmanager.EmailManager;
 import com.shivampaw.cpanelemailmanager.Main;
-import com.shivampaw.cpanelemailmanager.model.EmailForwarder;
+import com.shivampaw.cpanelemailmanager.model.Forwarder;
 import com.shivampaw.cpanelemailmanager.utils.JavaFXUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -15,13 +15,13 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Optional;
 
-public class ViewForwarders {
+public class ViewForwardersController {
     @FXML
-    private TableView<EmailForwarder> emailForwarderTableView;
+    private TableView<Forwarder> forwardersTableView;
     @FXML
-    private TableColumn<EmailForwarder, String> forward;
+    private TableColumn<Forwarder, String> forward;
     @FXML
-    private TableColumn<EmailForwarder, String> destination;
+    private TableColumn<Forwarder, String> destination;
 
     /**
      * Setup the emailForwarderListView
@@ -33,9 +33,9 @@ public class ViewForwarders {
         forward.setCellFactory(TextFieldTableCell.forTableColumn());
         destination.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        emailForwarderTableView.setItems(EmailManager.getInstance().getForwardAccounts());
-        emailForwarderTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        emailForwarderTableView.getSelectionModel().selectFirst();
+        forwardersTableView.setItems(EmailManager.getInstance().getForwardersList());
+        forwardersTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        forwardersTableView.getSelectionModel().selectFirst();
     }
 
     /**
@@ -44,13 +44,13 @@ public class ViewForwarders {
     public void newForwarder() {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.initOwner(Main.parentWindow.getOwner());
-        dialog.setTitle("Create Email Forwarder");
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/shivampaw/cpanelemailmanager/view/NewForwarder.fxml"));
+        dialog.setTitle("New Forwarder");
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/shivampaw/cpanelemailmanager/view/forwarders/NewForwarder.fxml"));
 
         try {
             dialog.getDialogPane().setContent(fxmlLoader.load());
         } catch (IOException e) {
-            System.err.println("Error loading new email forwarder dialog!");
+            System.err.println("Error loading new forwarder dialog!");
             e.printStackTrace();
         }
 
@@ -62,8 +62,8 @@ public class ViewForwarders {
         if(result.isPresent() && result.get() == ButtonType.OK) {
             Stage creatingForwarderStage = JavaFXUtils.showProgressDialog("Creating Forwarder...");
             new Thread(() -> {
-                EmailForwarder newForwarder = newForwarderController.newForwarder();
-                emailForwarderTableView.getSelectionModel().select(newForwarder);
+                Forwarder newForwarder = newForwarderController.newForwarder();
+                forwardersTableView.getSelectionModel().select(newForwarder);
                 Platform.runLater(creatingForwarderStage::hide);
             }).start();
         }
@@ -73,29 +73,28 @@ public class ViewForwarders {
      * Prompt for forward deletion and delete if OK
      */
     public void deleteForwarder() {
-        EmailForwarder account = emailForwarderTableView.getSelectionModel().getSelectedItem();
+        Forwarder account = forwardersTableView.getSelectionModel().getSelectedItem();
         if (account != null) { // if there is no account selected then do nothing
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Delete Email Forwarder");
             alert.setHeaderText("Delete Forwarder to " + account.getDestination());
-            alert.setContentText("Are you sure you want to delete this email forwarder from " + account.getForward() + " to " + account.getDestination() + "?");
+            alert.setContentText("Are you sure you want to delete this forwarder from " + account.getForward() + " to " + account.getDestination() + "?");
 
             Optional<ButtonType> result = alert.showAndWait(); // show confirmation box
 
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 Stage deletingForwarderStage = JavaFXUtils.showProgressDialog("Deleting Forwarder...");
                 new Thread(() -> {
-                    EmailManager.getInstance().deleteEmailForwarder(account.getForward(), account.getDestination());
-                    EmailManager.getInstance().getForwardAccounts().remove(account);
+                    EmailManager.getInstance().deleteForwarder(account.getForward(), account.getDestination());
+                    EmailManager.getInstance().getForwardersList().remove(account);
                     Platform.runLater(deletingForwarderStage::hide);
                 }).start();
             }
         }
     }
 
-    @FXML
-    public void close() throws IOException {
-        Stage stage = (Stage) emailForwarderTableView.getScene().getWindow();
-        stage.close();
+
+    public void backToMainWindow() throws IOException {
+        Main.parentWindow.getScene().setRoot(FXMLLoader.load(getClass().getResource("/com/shivampaw/cpanelemailmanager/view/MainWindow.fxml")));
     }
 }

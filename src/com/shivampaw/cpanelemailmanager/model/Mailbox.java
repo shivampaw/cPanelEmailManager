@@ -1,13 +1,13 @@
 package com.shivampaw.cpanelemailmanager.model;
 
-public class EmailPop {
+public class Mailbox {
     private String user;
     private String email;
     private String diskquota;
     private String diskused;
 
 
-    public EmailPop(String user, String email, String diskquota, String diskused) {
+    public Mailbox(String user, String email, String diskquota, String diskused) {
         this.user = user;
         this.email = email;
         this.diskquota = diskquota;
