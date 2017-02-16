@@ -55,7 +55,7 @@ public class CPanelUAPI {
             e.printStackTrace();
         }
 
-        return isJSONValid(sb.toString()) ? sb.toString() : "Error";
+        return isJSONValid(sb.toString()) ? sb.toString() : "ERROR";
     }
 
 

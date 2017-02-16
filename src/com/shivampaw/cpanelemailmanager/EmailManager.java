@@ -6,19 +6,19 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.shivampaw.cpanelemailmanager.model.Forwarder;
 import com.shivampaw.cpanelemailmanager.model.Mailbox;
+import com.shivampaw.cpanelemailmanager.utils.JavaFXUtils;
 import com.shivampaw.cpaneluapi.CPanelUAPI;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
 
 import java.io.IOException;
 import java.util.HashMap;
 
 public class EmailManager {
     private static EmailManager ourInstance = new EmailManager();
-    private CPanelUAPI uapi;
+    private CPanelUAPI api;
     private ObservableList<Mailbox> mailboxes = FXCollections.observableArrayList();
     private ObservableList<Forwarder> forwarders = FXCollections.observableArrayList();
     private String domain = "";
@@ -81,16 +81,16 @@ public class EmailManager {
      * @param server cPanel Host
      */
     public void login(String username, String password, String server) {
-        this.uapi = new CPanelUAPI(server, username, password);
+        this.api = new CPanelUAPI(server, username, password);
 
-        String json = this.uapi.call("DomainInfo", "list_domains");
+        String json = this.api.call("DomainInfo", "list_domains");
         JsonObject domainsObject = new JsonParser().parse(json).getAsJsonObject().get("data").getAsJsonObject();
         this.domain = domainsObject.get("main_domain").getAsString();
-
         this.domains.add(this.domain);
-        String[] parameters = { "addon_domains", "parked_domains", "sub_domains" };
-        for(String parameter : parameters) {
-            for(JsonElement domain : domainsObject.get(parameter).getAsJsonArray()) {
+
+        String[] domainArrays = { "addon_domains", "parked_domains", "sub_domains" };
+        for(String domainArray : domainArrays) {
+            for(JsonElement domain : domainsObject.get(domainArray).getAsJsonArray()) {
                 this.domains.add(domain.getAsString());
             }
         }
@@ -100,16 +100,17 @@ public class EmailManager {
      * Logout of the current account and show the LoginWindow
      */
     public void logout() throws IOException {
-        this.uapi = null;
+        this.api = null;
         this.domain = "";
         this.domains = FXCollections.observableArrayList();
         this.mailboxes = FXCollections.observableArrayList();
-        this.forwarders = FXCollections.observableArrayList();;
+        this.forwarders = FXCollections.observableArrayList();
         Main.parentWindow.getScene().setRoot(FXMLLoader.load(getClass().getResource("/com/shivampaw/cpanelemailmanager/view/LoginWindow.fxml")));
     }
 
     /**
      * Switch domain in use to specified domain
+     * @param newDomain String containing the new domain to use
      */
     public void switchDomain(String newDomain) throws IOException {
         this.domain = newDomain;
@@ -131,7 +132,7 @@ public class EmailManager {
                 getMailboxes();
                 getForwarders();
             } else {
-                new Alert(Alert.AlertType.ERROR, obj.get("errors").getAsJsonArray().get(0).getAsString()).show();
+                JavaFXUtils.showErrorAlert(obj.get("errors").getAsJsonArray().get(0).getAsString());
             }
         });
     }
@@ -145,7 +146,7 @@ public class EmailManager {
      * Fetch and store cPanel Mailboxes through API Call
      */
     public void getMailboxes() {
-        String json = this.uapi.call("Email", "list_pops_with_disk", new HashMap<String, String>(){{
+        String json = this.api.call("Email", "list_pops_with_disk", new HashMap<String, String>(){{
             put("domain", domain);
         }});
         JsonArray emailPops = new JsonParser().parse(json).getAsJsonObject().get("data").getAsJsonArray();
@@ -169,7 +170,7 @@ public class EmailManager {
      * @param quota Account Quota
      */
     public void createMailbox(String username, String password, String quota) {
-        String json = this.uapi.call("Email", "add_pop", new HashMap<String, String>(){{
+        String json = this.api.call("Email", "add_pop", new HashMap<String, String>(){{
             put("email", username);
             put("password", password);
             put("quota", quota);
@@ -183,7 +184,7 @@ public class EmailManager {
      * @param email Email address to delete
      */
     public void deleteMailbox(String email) {
-        String json = this.uapi.call("Email", "delete_pop", new HashMap<String, String>(){{
+        String json = this.api.call("Email", "delete_pop", new HashMap<String, String>(){{
             put("email", email);
             put("domain", domain);
         }});
@@ -196,7 +197,7 @@ public class EmailManager {
      * @param quota New Quota
      */
     public void editMailboxQuota(String user, String quota) {
-        String json = this.uapi.call("Email", "edit_pop_quota", new HashMap<String, String>(){{
+        String json = this.api.call("Email", "edit_pop_quota", new HashMap<String, String>(){{
             put("email", user);
             put("quota", quota);
             put("domain", domain);
@@ -210,7 +211,7 @@ public class EmailManager {
      * @param password Password
      */
     public void editMailboxPassword(String user, String password) {
-        String json = this.uapi.call("Email", "passwd_pop", new HashMap<String, String>(){{
+        String json = this.api.call("Email", "passwd_pop", new HashMap<String, String>(){{
             put("email", user);
             put("password", password);
             put("domain", domain);
@@ -227,7 +228,7 @@ public class EmailManager {
      * Fetch and store cPanel forwarders through API Call
      */
     public void getForwarders() {
-        String json = this.uapi.call("Email", "list_forwarders", new HashMap<String, String>(){{
+        String json = this.api.call("Email", "list_forwarders", new HashMap<String, String>(){{
             put("domain", domain);
         }});
         JsonArray emailForwarders = new JsonParser().parse(json).getAsJsonObject().get("data").getAsJsonArray();
@@ -251,7 +252,7 @@ public class EmailManager {
      * @param forwardTo Email address to forward to
      */
     public void createForwarder(String forwardFrom, String forwardTo) {
-        String json = this.uapi.call("Email", "add_forwarder", new HashMap<String, String>(){{
+        String json = this.api.call("Email", "add_forwarder", new HashMap<String, String>(){{
             put("email", forwardFrom + "@" + domain);
             put("fwdopt", "fwd");
             put("fwdemail", forwardTo);
@@ -266,7 +267,7 @@ public class EmailManager {
      * @param dest Email address being forwarded to
      */
     public void deleteForwarder(String address, String dest) {
-        String json = this.uapi.call("Email", "delete_forwarder", new HashMap<String, String>(){{
+        String json = this.api.call("Email", "delete_forwarder", new HashMap<String, String>(){{
             put("address", address);
             put("forwarder", dest);
         }});
