@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Optional;
 
-public class ViewForwardersController {
+public class ViewForwarders {
     @FXML
     private TableView<Forwarder> forwardersTableView;
     @FXML
@@ -56,7 +56,7 @@ public class ViewForwardersController {
 
         dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
-        NewForwarderController newForwarderController = fxmlLoader.getController();
+        NewForwarder newForwarderController = fxmlLoader.getController();
         Optional<ButtonType> result = dialog.showAndWait(); // shows the dialog
 
         if(result.isPresent() && result.get() == ButtonType.OK) {

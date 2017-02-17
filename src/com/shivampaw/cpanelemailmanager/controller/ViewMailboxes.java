@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.Optional;
 
-public class ViewMailboxesController {
+public class ViewMailboxes {
     @FXML
     private ListView<Mailbox> mailboxesListView;
     @FXML
@@ -103,13 +103,13 @@ public class ViewMailboxesController {
 
         dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
-        NewMailboxesController newMailboxesController = fxmlLoader.getController();
+        NewMailboxes newMailboxes = fxmlLoader.getController();
         Optional<ButtonType> result = dialog.showAndWait();
 
         if(result.isPresent() && result.get() == ButtonType.OK) {
             Stage creatingMailboxProgressDialog = JavaFXUtils.showProgressDialog("Creating Mailbox...");
             new Thread(() -> {
-                newMailboxesController.newMailbox();
+                newMailboxes.newMailbox();
                 Platform.runLater(creatingMailboxProgressDialog::hide);
             }).start();
         }

@@ -5,7 +5,7 @@ import com.shivampaw.cpanelemailmanager.model.Forwarder;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
-public class NewForwarderController {
+public class NewForwarder {
     @FXML
     private TextField forwardFrom;
     @FXML
