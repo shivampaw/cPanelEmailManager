@@ -19,18 +19,12 @@ public class Login {
     @FXML
     private TextField cPanelPassword;
 
-    /**
-     * Remove focus from server field
-     */
+    //Remove focus from server field
     @FXML
     public void initialize() {
         Platform.runLater( () -> cPanelUsername.getParent().requestFocus() );
     }
 
-    /**
-     * Login the user whilst showing a progress dialog
-     * @throws IOException exception if error occurs loading main window.
-     */
     @FXML
     public void login() throws IOException {
 
@@ -40,8 +34,8 @@ public class Login {
             public void run() {
                 try {
                     EmailManager.getInstance().login(cPanelUsername.getText(), cPanelPassword.getText(), cPanelServer.getText());
-                    EmailManager.getInstance().getMailboxes();
-                    EmailManager.getInstance().getForwarders();
+                    EmailManager.getInstance().getMailboxesFromCpanel();
+                    EmailManager.getInstance().getForwardersFromCpanel();
                     Main.parentWindow.getScene().setRoot(FXMLLoader.load(getClass().getResource("/com/shivampaw/cpanelemailmanager/view/MainWindow.fxml")));
                 } catch (Exception e) {
                     Platform.runLater(() -> JavaFXUtils.showErrorAlert("Login Failed", "Check you entered the correct details and are using a valid host that supports SSL."));

@@ -23,12 +23,12 @@ public class MainWindow {
             Stage changingDomainsProgressDialog = JavaFXUtils.showProgressDialog("Switching Domain to " + newValue + "...");
             new Thread(() -> {
                 try {
-                    EmailManager.getInstance().switchDomain(newValue);
+                    EmailManager.getInstance().switchActiveDomain(newValue);
                 } catch (IOException e) {
                     JavaFXUtils.showErrorAlert("An error occurred whilst switching domain names.");
                 }
-                EmailManager.getInstance().getMailboxes();
-                EmailManager.getInstance().getForwarders();
+                EmailManager.getInstance().getMailboxesFromCpanel();
+                EmailManager.getInstance().getForwardersFromCpanel();
                 Platform.runLater(changingDomainsProgressDialog::hide);
             }).start();
         });

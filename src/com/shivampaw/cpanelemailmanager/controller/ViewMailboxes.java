@@ -42,7 +42,6 @@ public class ViewMailboxes {
         SortedList<Mailbox> sortedAccounts = new SortedList<>(EmailManager.getInstance().getMailboxesList(), Comparator.comparing(Mailbox::getUser));
         mailboxesListView.setItems(sortedAccounts);
         mailboxesListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        mailboxesListView.getSelectionModel().selectFirst();
     }
 
     /**
@@ -103,13 +102,13 @@ public class ViewMailboxes {
 
         dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
-        NewMailboxes newMailboxes = fxmlLoader.getController();
+        NewMailboxes newMailbox = fxmlLoader.getController();
         Optional<ButtonType> result = dialog.showAndWait();
 
         if(result.isPresent() && result.get() == ButtonType.OK) {
             Stage creatingMailboxProgressDialog = JavaFXUtils.showProgressDialog("Creating Mailbox...");
             new Thread(() -> {
-                newMailboxes.newMailbox();
+                newMailbox.newMailbox();
                 Platform.runLater(creatingMailboxProgressDialog::hide);
             }).start();
         }

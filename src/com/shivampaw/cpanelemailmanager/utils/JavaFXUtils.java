@@ -6,16 +6,12 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class JavaFXUtils {
 
-    /**
-     * Create a stage with a new progress dialog
-     * @param text Label text
-     * @return Stage progressDialogStage
-     */
     public static Stage showProgressDialog(String text) {
         Label updateLabel = new Label(text);
         updateLabel.setPrefWidth(400);
@@ -28,6 +24,7 @@ public class JavaFXUtils {
         updatePane.getChildren().addAll(updateLabel, progress);
 
         Stage progressDialogStage = new Stage(StageStyle.UTILITY);
+        progressDialogStage.initModality(Modality.APPLICATION_MODAL);
         progressDialogStage.setScene(new Scene(updatePane));
         progressDialogStage.show();
 
@@ -35,7 +32,7 @@ public class JavaFXUtils {
     }
 
     public static void showErrorAlert(String text) {
-        showErrorAlert("", text);
+        showErrorAlert("Error", text);
     }
 
     public static void showErrorAlert(String headerText, String text) {

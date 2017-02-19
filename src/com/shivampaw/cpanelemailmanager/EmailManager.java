@@ -24,47 +24,24 @@ public class EmailManager {
     private String domain = "";
     private ObservableList<String> domains = FXCollections.observableArrayList();
 
-    /**
-     * Private constructor
-     */
     private EmailManager() {}
 
-    /**
-     * getInstance method for Singleton
-     * @return EmailManager
-     */
     public static EmailManager getInstance() {
         return ourInstance;
     }
 
-    /**
-     * Retrieve mailboxes
-     * @return ObservableList<Mailbox>
-     */
     public ObservableList<Mailbox> getMailboxesList() {
         return this.mailboxes;
     }
 
-    /**
-     * Retrieve forwarders
-     * @return ObservableList<Forwarder>
-     */
     public ObservableList<Forwarder> getForwardersList() {
         return this.forwarders;
     }
 
-    /**
-     * Get domain to access
-     * @return String domain to access
-     */
     public String getDomain() {
         return domain;
     }
 
-    /**
-     * Retrieve forwarders
-     * @return ObservableList<Forwarder>
-     */
     public ObservableList<String> getDomains() {
         return this.domains;
     }
@@ -74,12 +51,7 @@ public class EmailManager {
     ////////////////////////////// LOGIN / LOGOUT / MISC //////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////
-    /**
-     * Login using the specified parameters
-     * @param username cPanel Username
-     * @param password cPanel Password
-     * @param server cPanel Host
-     */
+
     public void login(String username, String password, String server) {
         this.api = new CPanelUAPI(server, username, password);
 
@@ -96,9 +68,6 @@ public class EmailManager {
         }
     }
 
-    /**
-     * Logout of the current account and show the LoginWindow
-     */
     public void logout() throws IOException {
         this.api = null;
         this.domain = "";
@@ -108,29 +77,20 @@ public class EmailManager {
         Main.parentWindow.getScene().setRoot(FXMLLoader.load(getClass().getResource("/com/shivampaw/cpanelemailmanager/view/LoginWindow.fxml")));
     }
 
-    /**
-     * Switch domain in use to specified domain
-     * @param newDomain String containing the new domain to use
-     */
-    public void switchDomain(String newDomain) throws IOException {
+    public void switchActiveDomain(String newDomain) throws IOException {
         this.domain = newDomain;
         this.mailboxes = FXCollections.observableArrayList();
         this.forwarders = FXCollections.observableArrayList();
         Main.parentWindow.getScene().setRoot(FXMLLoader.load(getClass().getResource("/com/shivampaw/cpanelemailmanager/view/MainWindow.fxml")));
     }
 
-    /**
-     * Check response and show error if not successful.
-     * If successful then reload email mailboxes and forwarders
-     * @param json Json to check
-     */
-    private void checkResponse(String json) {
+    private void checkCpanelResponse(String json) {
         JsonObject obj = new JsonParser().parse(json).getAsJsonObject();
         int status = obj.get("status").getAsInt();
         Platform.runLater(() -> {
             if(status == 1) {
-                getMailboxes();
-                getForwarders();
+                getMailboxesFromCpanel();
+                getForwardersFromCpanel();
             } else {
                 JavaFXUtils.showErrorAlert(obj.get("errors").getAsJsonArray().get(0).getAsString());
             }
@@ -142,10 +102,8 @@ public class EmailManager {
     ////////////////////////////// EMAIL MAILBOXES //////////////////////////////
     /////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////
-    /**
-     * Fetch and store cPanel Mailboxes through API Call
-     */
-    public void getMailboxes() {
+
+    public void getMailboxesFromCpanel() {
         String json = this.api.call("Email", "list_pops_with_disk", new HashMap<String, String>(){{
             put("domain", domain);
         }});
@@ -163,12 +121,6 @@ public class EmailManager {
         }
     }
 
-    /**
-     * Create mailbox through API call with specified params
-     * @param username Account Username
-     * @param password Account Password
-     * @param quota Account Quota
-     */
     public void createMailbox(String username, String password, String quota) {
         String json = this.api.call("Email", "add_pop", new HashMap<String, String>(){{
             put("email", username);
@@ -176,47 +128,33 @@ public class EmailManager {
             put("quota", quota);
             put("domain", domain);
         }});
-        checkResponse(json);
+        checkCpanelResponse(json);
     }
 
-    /**
-     * Delete mailbox through api call
-     * @param email Email address to delete
-     */
     public void deleteMailbox(String email) {
         String json = this.api.call("Email", "delete_pop", new HashMap<String, String>(){{
             put("email", email);
             put("domain", domain);
         }});
-        checkResponse(json);
+        checkCpanelResponse(json);
     }
 
-    /**
-     * Edit mailbox quota
-     * @param user Username
-     * @param quota New Quota
-     */
     public void editMailboxQuota(String user, String quota) {
         String json = this.api.call("Email", "edit_pop_quota", new HashMap<String, String>(){{
             put("email", user);
             put("quota", quota);
             put("domain", domain);
         }});
-        checkResponse(json);
+        checkCpanelResponse(json);
     }
 
-    /**
-     * Edit mailbox password
-     * @param user Username
-     * @param password Password
-     */
     public void editMailboxPassword(String user, String password) {
         String json = this.api.call("Email", "passwd_pop", new HashMap<String, String>(){{
             put("email", user);
             put("password", password);
             put("domain", domain);
         }});
-        checkResponse(json);
+        checkCpanelResponse(json);
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -224,10 +162,8 @@ public class EmailManager {
     ////////////////////////////// EMAIL FORWARDERS //////////////////////////////
     //////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////
-    /**
-     * Fetch and store cPanel forwarders through API Call
-     */
-    public void getForwarders() {
+
+    public void getForwardersFromCpanel() {
         String json = this.api.call("Email", "list_forwarders", new HashMap<String, String>(){{
             put("domain", domain);
         }});
@@ -246,11 +182,6 @@ public class EmailManager {
 
     }
 
-    /**
-     * Create forwarder through API call with specified params
-     * @param forwardFrom Email address to forward from
-     * @param forwardTo Email address to forward to
-     */
     public void createForwarder(String forwardFrom, String forwardTo) {
         String json = this.api.call("Email", "add_forwarder", new HashMap<String, String>(){{
             put("email", forwardFrom + "@" + domain);
@@ -258,20 +189,15 @@ public class EmailManager {
             put("fwdemail", forwardTo);
             put("domain", domain);
         }});
-        checkResponse(json);
+        checkCpanelResponse(json);
     }
 
-    /**
-     * Delete forwarder through api call
-     * @param address Email address that is being forwarded from
-     * @param dest Email address being forwarded to
-     */
     public void deleteForwarder(String address, String dest) {
         String json = this.api.call("Email", "delete_forwarder", new HashMap<String, String>(){{
             put("address", address);
             put("forwarder", dest);
         }});
-        checkResponse(json);
+        checkCpanelResponse(json);
     }
 
 }

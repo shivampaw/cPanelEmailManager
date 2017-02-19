@@ -16,8 +16,8 @@
        <VBox>
            <ToolBar>
                <HBox spacing="10">
-                   <Button text="New Email Forwarder" onAction="#newForwarder" />
-                   <Button text="Delete Selected Email Forwarder" onAction="#deleteForwarder" />
+                   <Button text="New Forwarder" onAction="#newForwarder" />
+                   <Button text="Delete Selected Forwarder" onAction="#deleteForwarder" />
                    <Button text="Back" onAction="#backToMainWindow" />
                </HBox>
            </ToolBar>

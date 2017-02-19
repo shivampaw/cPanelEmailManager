@@ -35,7 +35,6 @@ public class ViewForwarders {
 
         forwardersTableView.setItems(EmailManager.getInstance().getForwardersList());
         forwardersTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        forwardersTableView.getSelectionModel().selectFirst();
     }
 
     /**
@@ -62,8 +61,7 @@ public class ViewForwarders {
         if(result.isPresent() && result.get() == ButtonType.OK) {
             Stage creatingForwarderStage = JavaFXUtils.showProgressDialog("Creating Forwarder...");
             new Thread(() -> {
-                Forwarder newForwarder = newForwarderController.newForwarder();
-                forwardersTableView.getSelectionModel().select(newForwarder);
+                newForwarderController.newForwarder();
                 Platform.runLater(creatingForwarderStage::hide);
             }).start();
         }
